@@ -1,5 +1,4 @@
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster, toast } from 'sonner';
 import { TooltipProvider } from "@/components/ui/tooltip";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -34,7 +33,6 @@ export default function RootLayout({
         <QueryProvider>
           <TooltipProvider>
             <Toaster />
-            <Sonner />
             {children}
           </TooltipProvider>
         </QueryProvider>
