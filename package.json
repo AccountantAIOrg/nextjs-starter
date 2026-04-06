@@ -11,7 +11,7 @@
     "@base-ui/react": "^1.2.0",
     "@hookform/resolvers": "^5.2.2",
     "@krutai/ai-provider": "^0.2.15",
-    "@krutai/auth": "^0.2.3",
+    "@krutai/auth": "^0.4.1",
     "@krutai/db-service": "^1.0.1",
     "@krutai/email-services": "^1.0.3",
     "@krutai/excel-comparison": "^0.0.8",
