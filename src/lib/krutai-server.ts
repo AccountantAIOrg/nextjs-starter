@@ -1,0 +1,98 @@
+import { KrutAuth } from "@krutai/auth";
+import { DbService } from "@krutai/db-service";
+import { Pool } from "pg";
+
+type ServerConfig = {
+  apiKey: string;
+  serverUrl: string;
+  projectId: string;
+  dbName: string;
+};
+
+function requireEnv(name: string) {
+  const value = process.env[name];
+
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
+
+  return value;
+}
+
+function getServerConfig(): ServerConfig {
+  return {
+    apiKey: requireEnv("KRUTAI_API_KEY"),
+    serverUrl: process.env.KRUTAI_SERVER_URL ?? "http://localhost:8000",
+    projectId: requireEnv("KRUTAI_DB_PROJECT_ID"),
+    dbName: requireEnv("KRUTAI_DB_NAME"),
+  };
+}
+
+let dbUrlPromise: Promise<string> | null = null;
+let authClientPromise: Promise<KrutAuth> | null = null;
+let poolPromise: Promise<Pool> | null = null;
+
+export async function getDbUrl() {
+  if (!dbUrlPromise) {
+    dbUrlPromise = (async () => {
+      const config = getServerConfig();
+      const dbService = new DbService({
+        apiKey: config.apiKey,
+        serverUrl: config.serverUrl,
+      });
+
+      await dbService.initialize();
+
+      const { dbUrl } = await dbService.getDbConfig({
+        projectId: config.projectId,
+        dbName: config.dbName,
+      });
+
+      return dbUrl;
+    })().catch((error) => {
+      dbUrlPromise = null;
+      throw error;
+    });
+  }
+
+  return dbUrlPromise;
+}
+
+export async function getAuthClient() {
+  if (!authClientPromise) {
+    authClientPromise = (async () => {
+      const config = getServerConfig();
+      const databaseUrl = await getDbUrl();
+      const auth = new KrutAuth({
+        apiKey: config.apiKey,
+        serverUrl: config.serverUrl,
+        databaseUrl,
+      });
+
+      await auth.initialize();
+      return auth;
+    })().catch((error) => {
+      authClientPromise = null;
+      throw error;
+    });
+  }
+
+  return authClientPromise;
+}
+
+export async function getPool() {
+  if (!poolPromise) {
+    poolPromise = (async () => {
+      const dbUrl = await getDbUrl();
+
+      return new Pool({
+        connectionString: dbUrl,
+      });
+    })().catch((error) => {
+      poolPromise = null;
+      throw error;
+    });
+  }
+
+  return poolPromise;
+}
