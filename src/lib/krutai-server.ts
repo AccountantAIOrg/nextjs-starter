@@ -22,9 +22,9 @@ function requireEnv(name: string) {
 function getServerConfig(): ServerConfig {
   return {
     apiKey: requireEnv("KRUTAI_API_KEY"),
-    serverUrl: process.env.KRUTAI_SERVER_URL ?? "http://localhost:8000",
-    projectId: requireEnv("KRUTAI_DB_PROJECT_ID"),
-    dbName: requireEnv("KRUTAI_DB_NAME"),
+    serverUrl: requireEnv("KRUTAI_SERVER_URL"),
+    projectId: requireEnv("PROJECT_ID"),
+    dbName: requireEnv("PROJECT_DB_NAME"),
   };
 }
 
