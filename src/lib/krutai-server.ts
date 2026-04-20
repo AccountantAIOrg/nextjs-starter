@@ -1,5 +1,4 @@
 import { KrutAuth } from "@krutai/auth";
-import { DbService } from "@krutai/db-service";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
@@ -30,35 +29,12 @@ function getServerConfig(): ServerConfig {
   };
 }
 
-let dbUrlPromise: Promise<string> | null = null;
 let authClientPromise: Promise<KrutAuth> | null = null;
 let poolPromise: Promise<Pool> | null = null;
 let prismaPromise: Promise<PrismaClient> | null = null;
 
 export async function getDbUrl() {
-  if (!dbUrlPromise) {
-    dbUrlPromise = (async () => {
-      const config = getServerConfig();
-      const dbService = new DbService({
-        apiKey: config.apiKey,
-        serverUrl: config.serverUrl,
-      });
-
-      await dbService.initialize();
-
-      const { dbUrl } = await dbService.getDbConfig({
-        projectId: config.projectId,
-        dbName: config.dbName,
-      });
-
-      return dbUrl;
-    })().catch((error) => {
-      dbUrlPromise = null;
-      throw error;
-    });
-  }
-
-  return dbUrlPromise;
+  return requireEnv("DATABASE_URL");
 }
 
 export async function getAuthClient() {
