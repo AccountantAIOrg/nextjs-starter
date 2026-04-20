@@ -1,6 +1,8 @@
 import { KrutAuth } from "@krutai/auth";
 import { DbService } from "@krutai/db-service";
 import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from "@prisma/client";
 
 type ServerConfig = {
   apiKey: string;
@@ -31,6 +33,7 @@ function getServerConfig(): ServerConfig {
 let dbUrlPromise: Promise<string> | null = null;
 let authClientPromise: Promise<KrutAuth> | null = null;
 let poolPromise: Promise<Pool> | null = null;
+let prismaPromise: Promise<PrismaClient> | null = null;
 
 export async function getDbUrl() {
   if (!dbUrlPromise) {
@@ -95,4 +98,18 @@ export async function getPool() {
   }
 
   return poolPromise;
+}
+
+export async function getPrisma() {
+  if (!prismaPromise) {
+    prismaPromise = (async () => {
+      const pool = await getPool();
+      const adapter = new PrismaPg(pool);
+      return new PrismaClient({ adapter });
+    })().catch((error) => {
+      prismaPromise = null;
+      throw error;
+    });
+  }
+  return prismaPromise;
 }

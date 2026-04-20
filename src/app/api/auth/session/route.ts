@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 import { getAuthClient } from "@/lib/krutai-server";
 
-const SESSION_COOKIE = "krutai_todo_session";
+const SESSION_COOKIE = "krutai_auth_session";
 
 export async function GET() {
   try {
