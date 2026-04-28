@@ -15,6 +15,7 @@
     "@krutai/db-service": "^1.0.3",
     "@krutai/email-services": "^1.0.7",
     "@krutai/excel-comparison": "^0.1.0",
+    "@krutai/worker": "^1.0.0",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@radix-ui/react-accordion": "^1.2.12",
