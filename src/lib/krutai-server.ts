@@ -6,8 +6,6 @@ import { PrismaClient } from "@prisma/client";
 type ServerConfig = {
   apiKey: string;
   serverUrl: string;
-  projectId: string;
-  dbName: string;
 };
 
 function requireEnv(name: string) {
@@ -24,8 +22,6 @@ function getServerConfig(): ServerConfig {
   return {
     apiKey: requireEnv("KRUTAI_API_KEY"),
     serverUrl: requireEnv("KRUTAI_SERVER_URL"),
-    projectId: requireEnv("PROJECT_ID"),
-    dbName: requireEnv("PROJECT_DB_NAME"),
   };
 }
 
