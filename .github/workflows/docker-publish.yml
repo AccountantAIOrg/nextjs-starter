@@ -25,6 +25,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Validate registry configuration
+        run: |
+          if [ -z "${{ secrets.DIGITALOCEAN_REGISTRY_NAME }}" ]; then
+            echo "DIGITALOCEAN_REGISTRY_NAME secret is required."
+            exit 1
+          fi
+          if [ -z "${{ secrets.DO_TOKEN }}" ]; then
+            echo "DO_TOKEN secret is required."
+            exit 1
+          fi
+
       - name: Log in to DigitalOcean Container Registry
         uses: docker/login-action@v3
         with:
@@ -48,5 +59,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # build-args: |
-          #   DATABASE_URL=${{ secrets.DATABASE_URL }}
+          build-args: |
+            DATABASE_URL=${{ secrets.DATABASE_URL }}
