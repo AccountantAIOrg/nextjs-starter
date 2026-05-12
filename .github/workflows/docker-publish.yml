@@ -40,7 +40,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.DO_TOKEN }}
+          username: ${{ secrets.DO_EMAIL }}
           password: ${{ secrets.DO_TOKEN }}
 
       - name: Extract Docker metadata
