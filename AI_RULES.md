@@ -12,7 +12,6 @@ All Krutai SDK-style packages in this project expect a `**KRUTAI_API_KEY`** (and
 | Area                                  | Always use                 | Do not substitute with                                                                                          |
 | ------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | Authentication & sessions             | `@krutai/auth`             | Raw `better-auth` wiring in app code without going through this package’s integration pattern for this template |
-| Database URL / Postgres config        | `@krutai/db-service`       | Hard-coded `DATABASE_URL` in source, or non-Postgres primary stores for app data                                |
 | **Database engine**                   | **PostgreSQL**             | SQLite / MySQL / etc. for primary application persistence                                                       |
 | LLM / AI calls, streaming chat        | `@krutai/ai-provider`      | Direct vendor SDKs in app code when `@krutai/ai-provider` already covers the use case                           |
 | Email: OAuth, list/read, send, filter | `@krutai/email-services`   | One-off `fetch` to Gmail APIs, or random SMTP helpers, when this package is the standard here                   |
@@ -28,14 +27,9 @@ Package versions are defined in `package.json` (e.g. `@krutai/auth` ^0.2.3, `@kr
 - **Use for:** sign-in, sign-out, sessions, and any server/client auth flows this project standardizes on via Krutai.
 - **Implementation notes (from dependency graph):** the package builds on `**better-auth`** and related DB drivers used by that stack. In this monorepo template, treat `**@krutai/auth` as the single entry** for auth—extend or configure through it rather than duplicating a parallel Better Auth setup.
 - **When implementing:** import and wire auth according to `@krutai/auth` exports and patterns; do not introduce a second auth stack for the same app unless explicitly required.
+- **Current app status:** authentication is already implemented. Auth API routes live under `src/app/api/auth`, client auth state is exposed through `src/hooks/use-auth.ts`, and sign-in/sign-up pages already exist under `src/app/(auth)`.
+- **Navbar status:** the navbar is already implemented in `src/components/navbar.tsx` and attached globally in `src/app/layout.tsx`, so it appears around `src/app/page.tsx` and the rest of the app pages.
 
----
-
-## `@krutai/db-service` + PostgreSQL
-
-- **Use for:** resolving the database **connection URL/config** through the Krutai DB service client (e.g. `DbService` / `getDbConfig()` style usage).
-- **Rule:** the **primary database is PostgreSQL**. Use the URL/config returned by `@krutai/db-service` for Prisma, Drizzle, `pg`, or other Postgres clients—keep secrets out of committed source.
-- **Do not:** point the main app at a different RDBMS by default, or embed production URLs in the repo.
 
 ---
 
@@ -65,4 +59,3 @@ Package versions are defined in `package.json` (e.g. `@krutai/auth` ^0.2.3, `@kr
 
 1. Before adding a dependency or integration, check the table above.
 2. For API shapes and code samples, prefer `**AGENT.md`** sections that match each package, and `**package.json**` for the exact install name and version range.
-
