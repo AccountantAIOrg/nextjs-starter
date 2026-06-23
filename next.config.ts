@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       config.watchOptions = {
         ...config.watchOptions,
         ignored: [
+          "**/node_modules/**",
           "**/log/**",
           "**/storage/**",
           "**/.opencode/**",
