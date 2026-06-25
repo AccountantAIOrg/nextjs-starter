@@ -59,9 +59,11 @@ export async function getPool() {
   if (!poolPromise) {
     poolPromise = (async () => {
       const dbUrl = await getDbUrl();
+      const isLocal = dbUrl.includes("localhost") || dbUrl.includes("127.0.0.1");
 
       return new Pool({
         connectionString: dbUrl,
+        ssl: isLocal ? undefined : { rejectUnauthorized: false },
       });
     })().catch((error) => {
       poolPromise = null;
