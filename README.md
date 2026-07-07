@@ -15,13 +15,13 @@ This is a Next.js app template for Krutai projects. Use this README together wit
 Install dependencies:
 
 ```bash
-npm install
+bun install
 ```
 
 Run the development server:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
@@ -29,12 +29,12 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Scripts
 
 ```bash
-npm run dev
-npm run build
-npm run start
+bun run dev
+bun run build
+bun run start
 ```
 
-`npm run build` runs `prisma generate` before the Next.js build.
+`bun run build` runs `prisma generate` before the Next.js build.
 
 ## AI rules: task to package
 
@@ -44,18 +44,16 @@ Use `AI_RULES.md` as the canonical guide for which Krutai packages to use. Prefe
 | --- | --- | --- |
 | Authentication and sessions | `@krutai/auth` | Raw `better-auth` wiring in app code without going through this template's integration pattern |
 | Database engine | PostgreSQL | SQLite, MySQL, or other primary application persistence by default |
+| KrutAI-managed database config | `@krutai/db-service` | Hard-coded KrutAI database URLs or custom config fetchers |
 | LLM and AI calls, streaming chat | `@krutai/ai-provider` | Direct vendor SDKs when `@krutai/ai-provider` already covers the use case |
+| Live voice AI conversations | `@krutai/ai-live-conversation` | Hand-rolled browser audio/WebSocket flows for supported Gemini Live voice features |
 | Email OAuth, list/read, send, filter | `@krutai/email-services` | One-off Gmail API fetches or random SMTP helpers for supported flows |
 | Excel and spreadsheet compare | `@krutai/excel-comparison` | Manual `xlsx` or `exceljs` diff logic for supported comparison features |
+| MCP server connections and tool calls | `@krutai/mcp-client` | Direct MCP transport/OAuth/session handling when the Krut backend should manage it |
+| Role-based access control | `@krutai/rbac` | Custom permission engines for standard role/permission checks |
+| File upload and retrieval | `@krutai/uploadfile-services` | One-off S3 upload clients or custom file retrieval wrappers for KrutAI-backed files |
+| Background jobs and workers | `@krutai/worker` | Raw BullMQ setup when jobs should use KrutAI worker config and management |
 
-Current Krutai package versions are defined in `package.json`, including:
-
-- `@krutai/auth` `^0.4.5`
-- `@krutai/ai-provider` `^0.3.12`
-- `@krutai/email-services` `^1.0.8`
-- `@krutai/excel-comparison` `^0.1.1`
-- `@krutai/mcp-client` `^0.1.1`
-- `@krutai/worker` `^1.0.1`
 
 All Krutai SDK-style packages expect `KRUTAI_API_KEY` and any related package-specific environment variables unless the code path is purely local.
 
