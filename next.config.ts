@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
         ignored: [
           "**/node_modules/**",
           "**/log/**",
+          "**/lost+found/**",
+          "**/snapshot/**",
           "**/storage/**",
           "**/.opencode/**",
           "**/opencode.db*",
