@@ -29,14 +29,19 @@ export function Navbar() {
             <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           ) : session ? (
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                  <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
-                    <User className="h-4 w-4" />
-                  </div>
-                </Button>
+              <DropdownMenuTrigger
+                render={
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  />
+                }
+              >
+                <div className="flex h-full w-full items-center justify-center rounded-full bg-muted">
+                  <User className="h-4 w-4" />
+                </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
+              <DropdownMenuContent className="w-56" align="end">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col space-y-1">
                     <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>

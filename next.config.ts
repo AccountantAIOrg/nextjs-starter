@@ -1,8 +1,14 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 
 const nextConfig: NextConfig = {
   output: "standalone",
   webpack: (config, { dev }) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": path.resolve(__dirname, "src"),
+    };
+
     if (dev) {
       config.watchOptions = {
         ...config.watchOptions,
