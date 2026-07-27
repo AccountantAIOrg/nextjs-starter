@@ -38,7 +38,8 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/:path((?!_next/static/).*)",
+        source:
+          "/:path((?!_next/static/|_next/image|.*\\.(?:avif|gif|ico|jpeg|jpg|png|svg|webp)$).*)",
         headers: [
           {
             key: "Cache-Control",
