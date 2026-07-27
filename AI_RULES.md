@@ -4,6 +4,8 @@ Use this file as the canonical guide for **which Krutai packages to use** and **
 
 All Krutai SDK-style packages in this project expect `KRUTAI_API_KEY` (and related env vars per package docs) unless the code path is purely local.
 
+**Important API rule:** this project has moved from REST APIs to **tRPC only** for application features. Do not add new REST endpoints under `src/app/api` for normal app behavior. Add server operations as tRPC routers/procedures in `src/server/api`, register them in `src/server/api/root.ts`, and call them from client code through `src/lib/trpc.ts`. Only use a non-tRPC route when an external protocol explicitly requires it, such as a third-party webhook or framework-mandated route.
+
 ---
 
 ## Quick map: task → package
@@ -11,6 +13,7 @@ All Krutai SDK-style packages in this project expect `KRUTAI_API_KEY` (and relat
 
 | Area                                  | Always use                       | Do not substitute with                                                                                          |
 | ------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Application API layer                 | tRPC routers/procedures          | REST endpoints for normal app features                                                                         |
 | Authentication & sessions             | `@krutai/auth`                   | Raw `better-auth` wiring in app code without going through this package’s integration pattern for this template |
 | **Database engine**                   | **PostgreSQL**                   | SQLite / MySQL / etc. for primary application persistence                                                       |
 | KrutAI-managed database config        | `@krutai/db-service`             | Hard-coded KrutAI DB URLs or custom config fetchers                                                             |
@@ -29,8 +32,8 @@ All Krutai SDK-style packages in this project expect `KRUTAI_API_KEY` (and relat
 
 - **Use for:** sign-in, sign-out, sessions, and any server/client auth flows this project standardizes on via Krutai.
 - **Implementation notes (from dependency graph):** the package builds on `better-auth` and related DB drivers used by that stack. In this monorepo template, treat `@krutai/auth` as the single entry for auth; extend or configure through it rather than duplicating a parallel Better Auth setup.
-- **When implementing:** import and wire auth according to `@krutai/auth` exports and patterns; do not introduce a second auth stack for the same app unless explicitly required.
-- **Current app status:** authentication is already implemented. Auth API routes live under `src/app/api/auth`, client auth state is exposed through `src/hooks/use-auth.ts`, and sign-in/sign-up pages already exist under `src/app/(auth)`.
+- **When implementing:** import and wire auth according to `@krutai/auth` exports and patterns; expose app-facing auth behavior through tRPC procedures; do not introduce a second auth stack for the same app unless explicitly required.
+- **Current app status:** authentication is already implemented. Auth procedures live in `src/server/api/routers/auth.ts` and are exposed through `src/app/api/trpc/[trpc]/route.ts`, client auth state is exposed through `src/hooks/use-auth.ts`, and sign-in/sign-up pages already exist under `src/app/(auth)`.
 - **Navbar status:** the navbar is already implemented in `src/components/navbar.tsx` and attached globally in `src/app/layout.tsx`, so it appears around `src/app/page.tsx` and the rest of the app pages.
 
 
