@@ -5,7 +5,7 @@ This is a Next.js app template for Krutai projects. Use this README together wit
 ## Current status
 
 - Authentication is already implemented with `@krutai/auth`.
-- Auth API routes are available under `src/app/api/auth`.
+- The typed tRPC API is available under `src/app/api/trpc/[trpc]`.
 - Client auth state is exposed through `src/hooks/use-auth.ts`.
 - Sign-in and sign-up pages are already available under `src/app/(auth)`.
 - The navbar is already implemented in `src/components/navbar.tsx` and attached globally in `src/app/layout.tsx`, so it appears around `src/app/page.tsx` and the rest of the app pages.
@@ -64,13 +64,13 @@ Treat `@krutai/auth` as the single entry point for sign-in, sign-out, sessions, 
 Relevant files:
 
 - `src/lib/krutai-server.ts` initializes `KrutAuth`.
-- `src/app/api/auth/sign-in/route.ts` handles email sign-in.
-- `src/app/api/auth/sign-up/route.ts` handles email sign-up.
-- `src/app/api/auth/sign-out/route.ts` handles sign-out.
-- `src/app/api/auth/session/route.ts` reads the current session.
+- `src/app/api/trpc/[trpc]/route.ts` exposes the tRPC API at `/api/trpc`.
+- `src/server/api/root.ts` merges the tRPC routers.
+- `src/server/api/routers/auth.ts` handles email sign-in, sign-up, sign-out, and session reads.
+- `src/server/api/routers/users.ts` exposes user queries backed by Prisma.
 - `src/hooks/use-auth.ts` exposes auth mutations and session state to client components.
 - `src/components/navbar.tsx` renders sign-in/sign-up buttons for guests and a user menu for signed-in users.
-- `src/app/layout.tsx` wraps every page with `QueryProvider`, `TooltipProvider`, `Toaster`, and `Navbar`.
+- `src/app/layout.tsx` wraps every page with the tRPC-enabled `QueryProvider`, `TooltipProvider`, `Toaster`, and `Navbar`.
 
 
 ## Project structure
@@ -78,11 +78,12 @@ Relevant files:
 ```text
 src/app                 App Router pages, layouts, and API routes
 src/app/(auth)          Sign-in and sign-up pages
-src/app/api/auth        Authentication route handlers
+src/app/api/trpc        tRPC route handler
 src/components          Shared app components
 src/components/ui       Reusable UI primitives
 src/hooks               Client hooks
 src/lib                 Server utilities and shared helpers
+src/server/api          tRPC context, root router, and feature routers
 prisma                  Prisma schema and database configuration
 ```
 
