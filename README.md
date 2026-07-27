@@ -6,6 +6,7 @@ This is a Next.js app template for Krutai projects. Use this README together wit
 
 - Authentication is already implemented with `@krutai/auth`.
 - The typed tRPC API is available under `src/app/api/trpc/[trpc]`.
+- All application API work must go through tRPC. Do not add REST endpoints for app features unless the route is a third-party webhook, Next.js platform route, or another explicitly required protocol.
 - Client auth state is exposed through `src/hooks/use-auth.ts`.
 - Sign-in and sign-up pages are already available under `src/app/(auth)`.
 - The navbar is already implemented in `src/components/navbar.tsx` and attached globally in `src/app/layout.tsx`, so it appears around `src/app/page.tsx` and the rest of the app pages.
@@ -40,6 +41,8 @@ bun run start
 
 Use `AI_RULES.md` as the canonical guide for which Krutai packages to use. Prefer these packages over ad-hoc libraries or alternate stacks when the task matches the area below.
 
+Important API rule: this template uses tRPC as the only application API layer. Add new server operations as tRPC routers/procedures in `src/server/api`, expose them through `src/server/api/root.ts`, and call them from clients with `src/lib/trpc.ts`. Do not create REST API routes for normal app features.
+
 | Area | Always use | Do not substitute with |
 | --- | --- | --- |
 | Authentication and sessions | `@krutai/auth` | Raw `better-auth` wiring in app code without going through this template's integration pattern |
@@ -60,6 +63,8 @@ All Krutai SDK-style packages expect `KRUTAI_API_KEY` and any related package-sp
 ## Auth implementation notes
 
 Treat `@krutai/auth` as the single entry point for sign-in, sign-out, sessions, and other auth flows. Do not add a parallel Better Auth setup for the same app.
+
+All auth-related app operations are exposed through tRPC procedures. Keep new auth/session behavior inside tRPC routers instead of adding REST handlers.
 
 Relevant files:
 
