@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --webpack",
+    "dev": "next dev --turbo",
     "build": "NODE_ENV=production prisma generate && NODE_ENV=production next build --webpack && NODE_ENV=production node scripts/prepare-standalone.mjs",
     "typecheck": "next typegen && tsc --noEmit",
     "start": "node .next/standalone/server.js",

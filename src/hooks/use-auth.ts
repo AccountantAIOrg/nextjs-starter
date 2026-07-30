@@ -1,10 +1,17 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export function useAuth() {
   const queryClient = useQueryClient();
   const router = useRouter();
+  const [sessionQueryEnabled, setSessionQueryEnabled] = useState(false);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setSessionQueryEnabled(true), 0);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const { data: session, isLoading: isSessionLoading } = useQuery({
     queryKey: ["session"],
@@ -16,6 +23,7 @@ export function useAuth() {
       const data = await res.json();
       return data.session;
     },
+    enabled: sessionQueryEnabled,
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
@@ -85,7 +93,7 @@ export function useAuth() {
 
   return {
     session,
-    isLoading: isSessionLoading,
+    isLoading: sessionQueryEnabled && isSessionLoading,
     signIn: signInMutation.mutate,
     isSigningIn: signInMutation.isPending,
     signUp: signUpMutation.mutate,
