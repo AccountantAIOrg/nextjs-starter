@@ -15,20 +15,14 @@ export function useAuth() {
     return () => window.clearTimeout(id);
   }, []);
 
-  const { data: session, isLoading: isSessionLoading } = useQuery({
-    queryKey: ["session"],
-    queryFn: async () => {
-      const res = await fetch("/api/auth/session");
-      if (!res.ok) {
-        return null; // Return null when there is no active session
-      }
-      const data = await res.json();
-      return data.session;
-    },
-    enabled: sessionQueryEnabled,
-    retry: false,
-    staleTime: 5 * 60 * 1000,
-  });
+  const { data, isLoading: isSessionLoading } = trpc.auth.session.useQuery(
+    undefined,
+    {
+      enabled: sessionQueryEnabled,
+      retry: false,
+      staleTime: 5 * 60 * 1000,
+    }
+  );
   const session = data as AuthSession | null | undefined;
 
   const signInMutation = trpc.auth.signIn.useMutation({
