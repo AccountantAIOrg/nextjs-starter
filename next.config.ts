@@ -3,28 +3,16 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  webpack: (config, { dev }) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
+  serverExternalPackages: [
+    "@prisma/adapter-pg",
+    "@prisma/client",
+    "pg",
+    "prisma",
+  ],
+  turbopack: {
+    resolveAlias: {
       "@": path.resolve(__dirname, "src"),
-    };
-
-    if (dev) {
-      config.watchOptions = {
-        ...config.watchOptions,
-        ignored: [
-          "**/node_modules/**",
-          "**/log/**",
-          "**/lost+found/**",
-          "**/snapshot/**",
-          "**/storage/**",
-          "**/.opencode/**",
-          "**/opencode.db*",
-        ],
-      };
-    }
-
-    return config;
+    },
   },
   async headers() {
     if (process.env.NODE_ENV !== "production") {
