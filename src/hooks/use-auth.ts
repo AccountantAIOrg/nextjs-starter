@@ -1,10 +1,12 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { AuthSession } from "@krutai/auth";
+
+import { trpc } from "@/lib/trpc";
 
 export function useAuth() {
-  const queryClient = useQueryClient();
+  const utils = trpc.useUtils();
   const router = useRouter();
   const [sessionQueryEnabled, setSessionQueryEnabled] = useState(false);
 
@@ -27,67 +29,38 @@ export function useAuth() {
     retry: false,
     staleTime: 5 * 60 * 1000,
   });
+  const session = data as AuthSession | null | undefined;
 
-  const signInMutation = useMutation({
-    mutationFn: async (credentials: any) => {
-      const res = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Sign in failed");
-      }
-      return res.json();
-    },
+  const signInMutation = trpc.auth.signIn.useMutation({
     onSuccess: () => {
       toast.success("Signed in successfully");
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      utils.auth.session.invalidate();
       router.push("/");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message);
     },
   });
 
-  const signUpMutation = useMutation({
-    mutationFn: async (credentials: any) => {
-      const res = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || "Sign up failed");
-      }
-      return res.json();
-    },
+  const signUpMutation = trpc.auth.signUp.useMutation({
     onSuccess: () => {
       toast.success("Account created successfully");
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      utils.auth.session.invalidate();
       router.push("/");
     },
-    onError: (error: any) => {
+    onError: (error) => {
       toast.error(error.message);
     },
   });
 
-  const signOutMutation = useMutation({
-    mutationFn: async () => {
-      const res = await fetch("/api/auth/sign-out", {
-        method: "POST",
-      });
-      if (!res.ok) {
-        throw new Error("Sign out failed");
-      }
-      return res.json();
-    },
+  const signOutMutation = trpc.auth.signOut.useMutation({
     onSuccess: () => {
       toast.success("Signed out successfully");
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      utils.auth.session.invalidate();
       router.push("/sign-in");
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
