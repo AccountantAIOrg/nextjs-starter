@@ -3,12 +3,7 @@ import path from "node:path";
 
 const nextConfig: NextConfig = {
   output: "standalone",
-  serverExternalPackages: [
-    "@prisma/adapter-pg",
-    "@prisma/client",
-    "pg",
-    "prisma",
-  ],
+  transpilePackages: ["@prisma/client", "@prisma/adapter-pg", "pg"],
   turbopack: {
     resolveAlias: {
       "@": path.resolve(__dirname, "src"),
