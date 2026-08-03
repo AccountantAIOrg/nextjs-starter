@@ -75,3 +75,18 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+enum AuthOtpRequestPurpose {
+  REGISTRATION
+  PASSWORD_RESET
+}
+
+model AuthOtpRequest {
+  id         String                @id @default(cuid())
+  identifier String
+  purpose    AuthOtpRequestPurpose
+  createdAt  DateTime              @default(now())
+
+  @@index([identifier, purpose, createdAt])
+  @@map("auth_otp_request")
+}

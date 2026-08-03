@@ -37,8 +37,21 @@ export function useAuth() {
   });
 
   const signUpMutation = trpc.auth.signUp.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        `Verification code sent. ${data.remaining} request${
+          data.remaining === 1 ? "" : "s"
+        } left.`
+      );
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const verifyEmailOtpMutation = trpc.auth.verifyEmailOtp.useMutation({
     onSuccess: () => {
-      toast.success("Account created successfully");
+      toast.success("Email verified successfully");
       utils.auth.session.invalidate();
       router.push("/");
     },
@@ -46,6 +59,45 @@ export function useAuth() {
       toast.error(error.message);
     },
   });
+
+  const resendVerificationOtpMutation =
+    trpc.auth.resendVerificationOtp.useMutation({
+      onSuccess: (data) => {
+        toast.success(
+          `Verification code sent. ${data.remaining} request${
+            data.remaining === 1 ? "" : "s"
+          } left.`
+        );
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+
+  const requestPasswordResetMutation =
+    trpc.auth.requestPasswordReset.useMutation({
+      onSuccess: (data) => {
+        toast.success(
+          `If that email can receive a reset code, one was sent. ${data.remaining} request${
+            data.remaining === 1 ? "" : "s"
+          } left.`
+        );
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
+
+  const resetPasswordWithOtpMutation =
+    trpc.auth.resetPasswordWithOtp.useMutation({
+      onSuccess: () => {
+        toast.success("Password reset successfully");
+        router.push("/sign-in");
+      },
+      onError: (error) => {
+        toast.error(error.message);
+      },
+    });
 
   const signOutMutation = trpc.auth.signOut.useMutation({
     onSuccess: () => {
@@ -63,8 +115,16 @@ export function useAuth() {
     isLoading: sessionQueryEnabled && isSessionLoading,
     signIn: signInMutation.mutate,
     isSigningIn: signInMutation.isPending,
-    signUp: signUpMutation.mutate,
+    signUp: signUpMutation.mutateAsync,
     isSigningUp: signUpMutation.isPending,
+    verifyEmailOtp: verifyEmailOtpMutation.mutate,
+    isVerifyingEmailOtp: verifyEmailOtpMutation.isPending,
+    resendVerificationOtp: resendVerificationOtpMutation.mutateAsync,
+    isResendingVerificationOtp: resendVerificationOtpMutation.isPending,
+    requestPasswordReset: requestPasswordResetMutation.mutateAsync,
+    isRequestingPasswordReset: requestPasswordResetMutation.isPending,
+    resetPasswordWithOtp: resetPasswordWithOtpMutation.mutate,
+    isResettingPasswordWithOtp: resetPasswordWithOtpMutation.isPending,
     signOut: signOutMutation.mutate,
     isSigningOut: signOutMutation.isPending,
   };
