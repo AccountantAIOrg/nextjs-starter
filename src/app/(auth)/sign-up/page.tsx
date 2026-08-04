@@ -6,10 +6,12 @@ import Link from "next/link";
 import { MailCheck, UserPlus } from "lucide-react";
 
 import { AuthCard } from "@/components/auth/auth-card";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 const RESEND_COOLDOWN_SECONDS = 30;
 
@@ -165,57 +167,69 @@ export default function SignUpPage() {
           </Button>
         </form>
       ) : (
-        <form onSubmit={handleSignUp} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              placeholder="John Doe"
-              required
-              autoComplete="name"
-              className="h-10"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+        <>
+          <div className="space-y-5">
+            <GoogleAuthButton />
+            <div className="flex items-center gap-3">
+              <Separator className="flex-1" />
+              <span className="text-xs font-medium uppercase text-muted-foreground">
+                or
+              </span>
+              <Separator className="flex-1" />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="name@example.com"
-              required
-              autoComplete="email"
-              className="h-10"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              required
-              minLength={8}
-              autoComplete="new-password"
-              className="h-10"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <p className="text-sm text-muted-foreground">
-              Use at least 8 characters.
-            </p>
-          </div>
-          <Button
-            type="submit"
-            size="lg"
-            className="w-full"
-            disabled={isSigningUp}
-          >
-            {isSigningUp ? "Creating account..." : "Continue"}
-          </Button>
-        </form>
+          <form onSubmit={handleSignUp} className="mt-5 space-y-5">
+            <div className="space-y-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                placeholder="John Doe"
+                required
+                autoComplete="name"
+                className="h-10"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="name@example.com"
+                required
+                autoComplete="email"
+                className="h-10"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                required
+                minLength={8}
+                autoComplete="new-password"
+                className="h-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <p className="text-sm text-muted-foreground">
+                Use at least 8 characters.
+              </p>
+            </div>
+            <Button
+              type="submit"
+              size="lg"
+              className="w-full"
+              disabled={isSigningUp}
+            >
+              {isSigningUp ? "Creating account..." : "Continue"}
+            </Button>
+          </form>
+        </>
       )}
     </AuthCard>
   );

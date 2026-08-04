@@ -1,19 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import Link from "next/link";
 import { LogIn } from "lucide-react";
+import { toast } from "sonner";
 
 import { AuthCard } from "@/components/auth/auth-card";
+import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 
 export default function SignInPage() {
   const { signIn, isSigningIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+
+    if (url.searchParams.get("google") !== "failed") {
+      return;
+    }
+
+    toast.error("Unable to sign in with Google.");
+    url.searchParams.delete("google");
+    window.history.replaceState(null, "", url.toString());
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +52,17 @@ export default function SignInPage() {
         </div>
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="space-y-5">
+        <GoogleAuthButton />
+        <div className="flex items-center gap-3">
+          <Separator className="flex-1" />
+          <span className="text-xs font-medium uppercase text-muted-foreground">
+            or
+          </span>
+          <Separator className="flex-1" />
+        </div>
+      </div>
+      <form onSubmit={handleSubmit} className="mt-5 space-y-5">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <Input

@@ -1,4 +1,6 @@
 export const SESSION_COOKIE = "krutai_auth_session";
+export const GOOGLE_OAUTH_STATE_COOKIE = "krutai_google_oauth_state";
+export const GOOGLE_OAUTH_VERIFIER_COOKIE = "krutai_google_oauth_verifier";
 
 type CookieOptions = {
   httpOnly?: boolean;
@@ -77,6 +79,27 @@ export function createDeletedSessionCookie() {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    maxAge: 0,
+    expires: new Date(0),
+  });
+}
+
+export function createGoogleOAuthCookie(name: string, value: string) {
+  return serializeCookie(name, value, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/api/auth/google/callback",
+    maxAge: 10 * 60,
+  });
+}
+
+export function createDeletedGoogleOAuthCookie(name: string) {
+  return serializeCookie(name, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/api/auth/google/callback",
     maxAge: 0,
     expires: new Date(0),
   });

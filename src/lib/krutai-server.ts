@@ -26,6 +26,7 @@ function getServerConfig(): ServerConfig {
 }
 
 let authClientPromise: Promise<KrutAuth> | null = null;
+const googleAuthClientPromises = new Map<string, Promise<KrutAuth>>();
 let poolPromise: Promise<Pool> | null = null;
 let prismaPromise: Promise<PrismaClient> | null = null;
 
@@ -53,6 +54,38 @@ export async function getAuthClient() {
   }
 
   return authClientPromise;
+}
+
+export async function getGoogleAuthClient(redirectUri: string) {
+  const normalizedRedirectUri = redirectUri.trim();
+  let authPromise = googleAuthClientPromises.get(normalizedRedirectUri);
+
+  if (!authPromise) {
+    authPromise = (async () => {
+      const config = getServerConfig();
+      const databaseUrl = await getDbUrl();
+      const auth = new KrutAuth({
+        apiKey: config.apiKey,
+        serverUrl: config.serverUrl,
+        databaseUrl,
+        google: {
+          clientId: requireEnv("GOOGLE_CLIENT_ID"),
+          clientSecret: requireEnv("GOOGLE_CLIENT_SECRET"),
+          redirectUri: normalizedRedirectUri,
+        },
+      });
+
+      await auth.initialize();
+      return auth;
+    })().catch((error) => {
+      googleAuthClientPromises.delete(normalizedRedirectUri);
+      throw error;
+    });
+
+    googleAuthClientPromises.set(normalizedRedirectUri, authPromise);
+  }
+
+  return authPromise;
 }
 
 export async function getPool() {

@@ -9,7 +9,7 @@
         "@hookform/resolvers": "^5.2.2",
         "@krutai/ai-live-conversation": "^0.1.1",
         "@krutai/ai-provider": "^0.3.12",
-        "@krutai/auth": "^0.5.2",
+        "@krutai/auth": "^0.6.0",
         "@krutai/db-service": "^1.0.4",
         "@krutai/email-services": "^1.0.8",
         "@krutai/excel-comparison": "^0.1.1",
@@ -270,7 +270,7 @@
 
     "@krutai/ai-provider": ["@krutai/ai-provider@0.3.12", "", { "dependencies": { "krutai": "0.1.10" } }, "sha512-Yju1TM9rZN/oHKDvmMROGQlnVguv1VMDUrbC25WjVi7C3CHp/QAn5S61fhRlFMyTEtTA9jKOlwRzGg3NqEeu+Q=="],
 
-    "@krutai/auth": ["@krutai/auth@0.5.2", "", { "dependencies": { "krutai": "0.1.10" } }, "sha512-2RCc2VH8SA4ZP3nZkrBCbpV0MdwJhzAN2Fu37q/llzfJjS/RaFq10nyIMrOrkAEYeAygGmCDYXZHcHAK4ytODw=="],
+    "@krutai/auth": ["@krutai/auth@0.6.0", "", { "dependencies": { "krutai": "0.1.10" } }, "sha512-XJILeO1md4Zzftkpt88A6zm8VuC/fLeGMBAw98nLpg5ORI5EL50+M9zTAGyojqj2CYqdZblg3pLMYBVktcfIzA=="],
 
     "@krutai/db-service": ["@krutai/db-service@1.0.4", "", { "dependencies": { "krutai": "0.1.10" } }, "sha512-Zq0C0WZWGqjKNxvbM6w0q9o1wLNv9p1+vSMvwN+fqMvbWk6hM58a7BaaHA4hWx6ozDgK5XNBKBatQx+wxvXGlg=="],
 

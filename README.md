@@ -5,6 +5,7 @@ This is a Next.js app template for Krutai projects. Use this README together wit
 ## Current status
 
 - Authentication is already implemented with `@krutai/auth`.
+- Google OAuth sign-in is available through the app-owned callback route at `/api/auth/google/callback`.
 - The typed tRPC API is available under `src/app/api/trpc/[trpc]`.
 - All application API work must go through tRPC. Do not add REST endpoints for app features unless the route is a third-party webhook, Next.js platform route, or another explicitly required protocol.
 - Client auth state is exposed through `src/hooks/use-auth.ts`.
@@ -64,7 +65,13 @@ All Krutai SDK-style packages expect `KRUTAI_API_KEY` and any related package-sp
 
 Treat `@krutai/auth` as the single entry point for sign-in, sign-out, sessions, and other auth flows. Do not add a parallel Better Auth setup for the same app.
 
-All auth-related app operations are exposed through tRPC procedures. Keep new auth/session behavior inside tRPC routers instead of adding REST handlers.
+Most auth-related app operations are exposed through tRPC procedures. Third-party protocol entry points, such as Google OAuth redirects and callbacks, live in App Router API routes.
+
+Google OAuth requires `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`. Set `NEXT_PUBLIC_APP_URL` or `APP_URL` in deployed environments when the request origin is not the public app origin, then register this exact redirect URI in Google Cloud:
+
+```text
+${APP_URL}/api/auth/google/callback
+```
 
 Relevant files:
 
@@ -72,6 +79,8 @@ Relevant files:
 - `src/app/api/trpc/[trpc]/route.ts` exposes the tRPC API at `/api/trpc`.
 - `src/server/api/root.ts` merges the tRPC routers.
 - `src/server/api/routers/auth.ts` handles email sign-in, sign-up, sign-out, and session reads.
+- `src/app/api/auth/google/start/route.ts` starts Google OAuth and stores temporary state in HTTP-only cookies.
+- `src/app/api/auth/google/callback/route.ts` completes Google OAuth and writes the normal session cookie.
 - `src/server/api/routers/users.ts` exposes user queries backed by Prisma.
 - `src/hooks/use-auth.ts` exposes auth mutations and session state to client components.
 - `src/components/navbar.tsx` renders sign-in/sign-up buttons for guests and a user menu for signed-in users.
